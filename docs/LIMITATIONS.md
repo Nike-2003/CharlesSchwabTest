@@ -7,7 +7,7 @@
   and whole-entry replacement. A directory entry whose key differs from its learner's id is not rejected; it is
   treated as missing.
 - **Concurrency tests show only the races they exercise.** With the lock removed from `enroll` and `drop`, the
-  enroll race failed in 39 of 50 repetitions and the drop race in 31 of 50 (see AI_USAGE.md). A passing run is
+  enroll race failed in 39 of 50 repetitions and the drop race in 31 of 50 (see AI-prompts.md). A passing run is
   evidence, not proof, that no race exists.
 - **A drop is final**, even if made by mistake.
 - **A learner removed as ineligible loses their queue position.** If their grade is corrected later, they

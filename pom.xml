@@ -37,6 +37,19 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.5.2</version>
             </plugin>
+            <!-- `mvn package` builds a runnable jar: java -jar target/course-waitlist-1.0.0.jar -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.4.2</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>waitlist.Main</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
             <!-- Coverage: `mvn verify` writes target/site/jacoco/index.html -->
             <plugin>
                 <groupId>org.jacoco</groupId>

@@ -2,10 +2,11 @@
 
 ## 1. Service boundary
 
-One in-memory Java library class, `EnrollmentService`, manages a single offering, Math III. It provides
+One in-memory Java class, `EnrollmentService`, manages a single offering, Math III. It provides
 `enroll`, `drop` (which also promotes), `getStatus` and `snapshot`. The caller supplies the learner directory.
-There is no HTTP layer, CLI, frontend, database, catalog or notification. No starter project was supplied, so
-this follows the brief's minimal-service fallback.
+A thin command-line prototype, `Main`, reads one command per line and prints each result so the feature can
+be tried by hand; it holds no rules of its own. There is no HTTP layer, frontend, database, catalog or
+notification. No starter project was supplied, so this follows the brief's service or CLI fallback.
 
 | Part | Files | Responsibility |
 | --- | --- | --- |
@@ -13,7 +14,8 @@ this follows the brief's minimal-service fallback.
 | Result types | `EnrollResult`, `DropResult` | Sealed interfaces with one record per outcome. |
 | Eligibility rule | `Eligibility` | Holds "Math I" and "Math II" as constants. `missingPrereqs(learner)` is pure. |
 | Enrollment service | `EnrollmentService` | Owns all state, the lock and the invariants. |
-| Tests | `src/test/java/waitlist` | One class per area, a `Checked` wrapper, and `ConcurrencyTest`. |
+| Command-line prototype | `Main` | Starts with five sample learners (one per prerequisite case), parses `learner`, `learners`, `enroll`, `drop`, `status` and `show`, and prints the service's results. |
+| Tests | `src/test/java/waitlist` | One class per area, a `Checked` wrapper, `ConcurrencyTest` and `MainTest`. |
 
 ## 2. Assumptions
 
