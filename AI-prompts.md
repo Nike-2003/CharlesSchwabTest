@@ -71,10 +71,8 @@ The agent checked my design calls against the brief and found no clashes. Before
 - concurrency: one lock, FIFO defined as lock order, the directory contract, and a paragraph on mapping to a
   database;
 - a test matrix of 28 scenario tests, 2 concurrency tests and a scripted CLI session, mapped to AC 1–6;
-- an AI_USAGE.md outline with 13 break-it-once checks;
-- what goes in each document, a 7 h 35 min time split, and a compliance checklist.
 
-**Part 2, 26 defects and risks (D1–D26).** The main ones, and the ones prompt 2 answers:
+**Part 2, 26 defects and risks (D1–D26).** 
 - **Concurrency tests that could pass when they shouldn't:**
   - worker exceptions are lost without `Future.get()` (D1, High);
   - nothing shows the tests can fail, so the lock-removal check must record real failure counts (D2, High);
@@ -118,9 +116,9 @@ I want to fix the below ones:
 
 3. Drop results. A second drop should get its own result, DropResult.AlreadyDropped. AC 5 asks for clear results and NotEnrolled hides what actually happened. A drop for an id with no record and no directory entry should return DropResult.UnknownLearner. That means AlreadyDropped, UnknownLearner and InvalidRequest will exist in both result interfaces, so note in DESIGN.md that code always uses the qualified names.
 
-4. "Enroll only once". Word it in DESIGN.md as our interpretation rather than a requirement: we read it as "hold a seat at most once", and the other reading would allow re-enrolling after a drop.
+4. "Enroll only once". Write it in DESIGN.md as our interpretation rather than a requirement: we read it as "hold a seat at most once", and we wont allow re-enrolling after a drop.
 
-5. Threading contract. Say plainly that the lock protects the service's own state, not the caller's map. If other threads update learners, the caller should pass a ConcurrentHashMap and replace whole entries.
+5. Threading contract. Lock protects the service's own state, not the caller's map. If other threads update learners, the caller should pass a ConcurrentHashMap and replace whole entries.
 
 6. Tests. Make sure the matrix covers a removed learner who asks again while still ineligible (PrereqNotMet, nothing changes), a learner who disappears from the directory while waiting, AlreadyWaitlisted reporting the new position after a promotion, a mismatched directory key, and getStatus.
 
@@ -133,7 +131,7 @@ For the rest of your list, go ahead with anything that's wording, documentation 
 - The directory abstraction. I'm not replacing the Map with an interface, copying it, or adding an update method to the service. It would tighten things up, but it adds API the brief doesn't ask for, and the lookup check plus a documented contract cover it.
 - Restructuring the data model or the test wrapper, for example a plain status map instead of the per-learner record, or a separate model inside the wrapper. They're reasonable ideas, but what we have is enough for the scope, they can be explored for future scope.
 
-Could you send back the full updated plan, then a short list of what changed and which findings you left out?
+Send back the full updated plan, then a short list of what changed and which findings you left out.
 ```
 
 ## Response 2 (summary)
@@ -181,11 +179,11 @@ turned down ideas from those earlier rounds, and this record credits them there.
 
 ## Implementation
 
-With the plan settled, I had the AI (Claude Code) build it in this repo.
+With the plan settled, I had the AI build it in this repo.
 
 **Prompt:**
 
-> Ok now in &lt;repo root&gt; is our repo root. Create a github repo for it and generate a Starter boilerplate code according to the plan. Implement all features mentioned in the plan. Refer to the assesment attached for any doubts. Try to be precise and optimal, don't overdo anything stick to the plan and assesment and maintain code quality and test coverage. Implementation needs to be as simple as possible and effective and optimal.
+> Ok now in &lt;repo root&gt; is our repo root. Create a github repo for it and generate a Starter boilerplate code according to the plan. Implement all features mentioned in the plan. Refer to the assesment attached for any doubts. Try to be precise and optimal, don't overdo anything stick to the plan and assesment and maintain code quality and test coverage. Implementation needs to be as simple as possible and optimal.
 
 Follow-up requests, summarised: add the command-line prototype and its sample learners, add the Maven Wrapper
 so only a JDK is needed, and the fixes in the table below.
