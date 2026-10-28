@@ -200,7 +200,21 @@ LIMITATIONS.md, following the plan.
 | Input is read as UTF-8, and a leading byte-order mark is ignored | Piping commands from Windows PowerShell made the first command "unknown". | Edited |
 | `learner <id>` needs at least one course | I typed `learner dev` expecting a lookup, and it silently wiped dev's courses. `learners` already lists everyone. | Edited |
 
-**My review:** TODO: what I read and checked myself, and anything I changed.
+**My review:**
+Verified manually all the available scenarios, and documenting them here: Started with a course strength of 3.
+
+1. Enrolled ana, ben and cara - Successfully enrolled as expected.
+2. Enrolling dev and eve who didn't complete the required courses leads to PrereqNotMet. It doesn't show that the course is full already as they are ineligible to attend it.
+3. Using learners command lists all students and the course they have completed.
+4. Using learner dev Math I, Math II is making the student eligible as we have added Math II to his courses.
+5. enroll dev pushes dev to waitlist.
+6. Enrolling multiple learners after seats are full keeps adding them to waitlist.
+7. "show" command shows the enrolled students, seats left, and the waitlist and the order in it.
+8. Made the learner at head of waitlist ineligible by changing their course, and then enrolled student has dropped. The program correctly skips the head of the queue and pops them out and enrolls the next eligible learner. Verified that the learner who has been skipped can complete courses again and request enrollment.
+9. Tried enrolling a student who is already enrolled returns AlreadyEnrolled[], if the student is in waitlist then we are getting AlreadyWaitlisted[position=x].
+10. When ineligible student tries enrolling, verified that no record is created as status {ineligible student name} is returning "no record"
+11. Verified that trying to drop by an already dropped student is returning AlreadyDropped
+12. Dropping a student not enrolled or in waitlist returns NotEnrolled. Aligned with our decision that waitlisted students can't drop.
 
 ## Verification
 

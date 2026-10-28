@@ -142,3 +142,17 @@ The reasoning behind the main choices is recorded in [ADR.md](ADR.md).
 | Exceptions for invalid requests | AC 5 asks for clear results; only configuration errors throw |
 | Copy the directory behind an update method | Adds an operation the brief doesn't ask for; the lookup check and the contract are enough |
 | HTTP layer, fair lock, `synchronized` on the instance | Out of scope; throughput cost; outside code could block the service |
+
+## 9. Acceptance criteria and tests
+
+| AC | Tests |
+| --- | --- |
+| 1. Enroll when a seat is free and prerequisites are met | `EnrollTest.enrollsWhenASeatIsFreeAndPrerequisitesAreMet` |
+| 2. Waitlist once when full; duplicate requests add no records | `EnrollTest`: `waitlistsInRequestOrderWhenFull`, `repeatRequestFromAWaitlistedLearnerChangesNothing`, `repeatRequestFromAnEnrolledLearnerChangesNothing`, `repeatRequestReportsTheNewPositionAfterAPromotion` |
+| 3. A drop opens a seat and promotes the earliest eligible learner | `DropPromotionTest` (all 4); `EligibilityTest.ineligibleHeadIsSkippedAndRemoved` |
+| 4. An ineligible learner is not enrolled or promoted; skip-and-remove is applied consistently | `EligibilityTest` (all 8) |
+| 5. Invalid requests and duplicate drops return clear results and change nothing | `InvalidRequestTest` (all); `EnrollTest.learnerWhoDroppedCannotEnrollAgain` |
+| 6. Tests for each case above, plus concurrency | Rows 1–5; `ConcurrencyTest`: 200 enrolls into 10 seats, and 10 drops racing 20 enrolls, 50 repetitions each |
+
+`assertNoChange` checks that rejected and duplicate requests leave the state unchanged, and the `Checked`
+wrapper asserts the §6 invariants after every `enroll` and `drop`. `MainTest` covers the command-line prototype.

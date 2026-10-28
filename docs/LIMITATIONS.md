@@ -6,6 +6,9 @@
 - **The learner directory belongs to the caller.** Concurrent updates are safe only with a `ConcurrentHashMap`
   and whole-entry replacement. A directory entry whose key differs from its learner's id is not rejected; it is
   treated as missing.
+- **Ids may contain inner whitespace.** The id rule rejects only empty ids and leading or trailing whitespace,
+  so `a b` is a valid id and the service handles it. The CLI splits each command on whitespace, so it can't
+  create a learner with such an id.
 - **Concurrency tests show only the races they exercise.** With the lock removed from `enroll` and `drop`, the
   enroll race failed in 39 of 50 repetitions and the drop race in 31 of 50 (see AI-prompts.md). A passing run is
   evidence, not proof, that no race exists.

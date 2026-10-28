@@ -94,8 +94,8 @@ class MainTest {
 
     @Test
     void badInputGetsAMessageInsteadOfACrash() throws IOException {
-        //   is whitespace to the id rule but not to the command parser.
-        List<String> output = run(1, "learner\nlearner x  Math I\nbogus\nenroll\nhelp\n");
+        // U+2003 (em space) is whitespace to the id rule but not to the command parser.
+        List<String> output = run(1, "learner\nlearner x\u2003 Math I\nbogus\nenroll\nhelp\n");
 
         assertEquals(Main.LEARNER_USAGE, output.get(0));
         assertEquals("Invalid learner: learner id must be non-empty with no leading or trailing whitespace", output.get(1));
@@ -114,7 +114,7 @@ class MainTest {
 
     @Test
     void byteOrderMarkAtTheStartOfPipedInputIsIgnored() throws IOException {
-        assertEquals(List.of("Seats 0/1 | enrolled [] | waitlist []"), run(1, "﻿show\n"));
+        assertEquals(List.of("Seats 0/1 | enrolled [] | waitlist []"), run(1, "\uFEFFshow\n"));
     }
 
     @Test

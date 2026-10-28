@@ -86,7 +86,7 @@ public final class Main {
         BufferedReader reader = new BufferedReader(input);
         for (String line = reader.readLine(); line != null; line = reader.readLine()) {
             // Windows PowerShell can start piped input with a byte-order mark, which strip() keeps.
-            if (!execute(line.replace("﻿", "").strip())) {
+            if (!execute(line.replace("\uFEFF", "").strip())) {
                 return;
             }
         }
