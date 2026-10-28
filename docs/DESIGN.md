@@ -131,6 +131,8 @@ Checked by the `Checked` test wrapper after every `enroll` and `drop`, and again
 
 ## 8. Rejected alternatives
 
+The reasoning behind the main choices is recorded in [ADR.md](ADR.md).
+
 | Alternative | Why not |
 | --- | --- |
 | Skip and retain an ineligible head | A seat could sit open while the waitlist is non-empty, breaking invariant 5 |

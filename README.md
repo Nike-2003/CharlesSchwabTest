@@ -104,5 +104,6 @@ src/test/java/waitlist/
   EnrollTest, DropPromotionTest, EligibilityTest, InvalidRequestTest, ConcurrencyTest, MainTest
 docs/
   DESIGN.md               design specification and assumptions
+  ADR.md                  architecture decision records: why each key choice was made
   LIMITATIONS.md          limitations and follow-up risks
 ```

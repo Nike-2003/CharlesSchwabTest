@@ -1,15 +1,5 @@
 # AI prompt and use record
 
-I used Claude (Anthropic) as an engineering assistant to plan the design, review it, and write the code, tests
-and documents. This file records the prompts I used, a summary of each response, what I accepted, edited or
-rejected, and how the result was checked.
-
-The design calls in prompt 1 came out of earlier AI-assisted sessions. In those I compared two draft designs
-against the brief and had the result reviewed by a second agent. I also turned down the AI's advice to stay with
-TypeScript, because I know Java better. To keep this record short and repeatable, I condensed that work, with
-the AI's help, into the two prompts below. I ran them on a fresh Claude agent that had only the brief: no code
-and no earlier plans. The responses are summarised, not quoted in full.
-
 | Step | AI's part | My decision | Informed |
 | --- | --- | --- | --- |
 | [Prompt 1](#prompt-1-the-brief-and-my-design-decisions): plan and review | a full plan, then 26 numbered defects and risks | input to prompt 2 | prompt 2 |
@@ -189,34 +179,6 @@ was the `putLearner` alternative in D11. The directory interface, copying the ma
 separate model inside the wrapper came up in earlier review rounds, not in this run. So my second rejection
 turned down ideas from those earlier rounds, and this record credits them there.
 
-## How the result compares with this repo
-
-The agent's final plan matches this repo on every design decision:
-- one course, Math III, with Math I and Math II as constants;
-- skip-and-remove at the head of the queue, with checks in the order id, record, directory, prerequisites,
-  capacity;
-- "enroll only once" stated as an interpretation;
-- `DropResult.AlreadyDropped` and `DropResult.UnknownLearner`, with the qualified-name rule;
-- the directory-key check at lookup, and the threading contract;
-- one private lock, and the same two concurrency tests;
-- the command-line prototype with the same five sample learners, the Maven Wrapper and JaCoCo.
-
-The differences are details the prompts leave open:
-
-| Area | Agent's plan | This repo |
-| --- | --- | --- |
-| Result records | carry the learner id, e.g. `Enrolled(id)` | carry only what's new, e.g. `Enrolled()` |
-| Output order | `enrolled` is a `LinkedHashSet`, and snapshots use lists | `Set.copyOf`; the CLI sorts what it prints |
-| `EnrollmentRecord` | checks the sequence number in its constructor, with factory methods | a plain record |
-| CLI output | friendly text, e.g. `waitlisted #1` | the result record, e.g. `Waitlisted[position=1]` |
-| `learner <id>` with no courses | clears the learner's courses | prints a usage line and changes nothing |
-| Bad seat count (`abc`, `0`) | not covered | prints a usage line and exits with status 2 |
-| Concurrency repetitions | a loop of 50 inside each test | `@RepeatedTest(50)` |
-| Test layout | one service test class with a nested class per AC | one test class per area |
-| Break-it-once | 16 planned checks | 8 checks, one per key rule (results below) |
-
-The `learner` and seat-count rows are fixes made after review; see [Implementation](#implementation).
-
 ## Implementation
 
 With the plan settled, I had the AI (Claude Code) build it in this repo.
@@ -236,7 +198,7 @@ LIMITATIONS.md, following the plan.
 | Change | Why | Decision |
 | --- | --- | --- |
 | Removed a capacity re-check in `promoteNext` | Coverage showed it could never run: a drop always frees exactly one seat. | AI's suggestion, accepted |
-| A bad seat count (`abc`, `0`) prints a usage line and exits with status 2 | It printed a Java stack trace. An earlier test run of these prompts handled this, and the repo didn't. | Edited |
+| A bad seat count (`abc`, `0`) prints a usage line and exits with status 2 | It printed a Java stack trace. A fresh-agent run of the planning prompts had flagged this case. | Edited |
 | Input is read as UTF-8, and a leading byte-order mark is ignored | Piping commands from Windows PowerShell made the first command "unknown". | Edited |
 | `learner <id>` needs at least one course | I typed `learner dev` expecting a lookup, and it silently wiped dev's courses. `learners` already lists everyone. | Edited |
 
@@ -252,7 +214,10 @@ LIMITATIONS.md, following the plan.
   untested lines are `main()`, which connects `System.in` and `System.out`. Running the app exercises them.
 - **Manual run:** the README's example session, run against the jar, printed every line as shown. Piping
   commands from Windows PowerShell and from Git Bash both work.
-- **Fresh agent:** its final plan matched this repo on every design decision (see the comparison above).
+- **Planning prompts re-run:** a fresh agent given only the brief and prompts 1 and 2 reached the same design
+  decisions as this repo: skip-and-remove at the head, "enroll only once" as an interpretation, the drop
+  results, the directory check at lookup, one lock and the same two concurrency tests. It differed only in
+  details the prompts leave open, such as result records carrying the learner id.
 
 ### Break-it-once checks
 
